@@ -1,22 +1,22 @@
-import express from 'express';
+import net from 'net';
 
-import routes from './routes';
-
-class App {
-  constructor() {
-    this.express = express();
-
-    this.middleware();
-    this.route();
+class Client {
+  constructor(address) {
+    this.address = address;
   }
 
-  middleware() {
-    this.express.use(express.json());
-  }
+  connect() {
+    const c = net.createConnection({
+      host: this.address.ip,
+      port: this.address.port,
+    });
 
-  route() {
-    this.express.use('/api', routes);
+    c.on('data', (data) => {
+      console.info(data.toString());
+    });
+
+    return c;
   }
 }
 
-export default new App().express;
+export default Client;
